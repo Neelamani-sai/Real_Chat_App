@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Simple Chat</title>
+  <style>
+    body { font-family: Arial; margin: 20px; }
+    #messages { border: 1px solid #ccc; height: 250px; overflow-y: scroll; padding: 10px; }
+    input { padding: 8px; width: 70%; }
+    button { padding: 8px 12px; }
+  </style>
+</head>
+<body>
+  <h2>Simple REST Chat</h2>
+
+  <div id="messages"></div><br>
+
+  <input id="msgInput" type="text" placeholder="Type message..." />
+  <button onclick="sendMessage()">Send</button>
+
+  <script>
+    async function loadMessages() {
+      const res = await fetch('/api/messages/');
+      const data = await res.json();
+      const div = document.getElementById('messages');
+      div.innerHTML = '';
+      data.forEach(msg => {
+        div.innerHTML += `<p><b>User ${msg.user}</b>: ${msg.text}</p>`;
+      });
+    }
+
+    async function sendMessage() {
+      const text = document.getElementById('msgInput').value;
+      await fetch('/api/messages/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          // include JWT token if auth required
+        },
+        body: JSON.stringify({ user: 1, text })
+      });
+      document.getElementById('msgInput').value = '';
+      loadMessages();
+    }
+
+    loadMessages();
+    setInterval(loadMessages, 3000); // auto-refresh every 3 seconds
+  </script>
+</body>
+</html>

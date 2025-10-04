@@ -3,6 +3,7 @@ from .models import Message
 from .serializers import messageserializer
 from rest_framework import generics,permissions
 from django.contrib.auth.models import User
+from .serializers import UserSerializer
 
 # Create your views here.
 class messageListCreateView(generics.ListCreateAPIView):
@@ -16,3 +17,6 @@ class messageListCreateView(generics.ListCreateAPIView):
 class UserListCreateView(generics.ListCreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
+def chatroom(request):
+    return render(request,'chat/chatroom.html')   
