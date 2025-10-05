@@ -4,6 +4,8 @@ from .serializers import messageserializer
 from rest_framework import generics,permissions
 from django.contrib.auth.models import User
 from .serializers import UserSerializer
+from rest_framework.serializers import ModelSerializer
+from rest_framework.permissions import AllowAny ,IsAuthenticated
 
 # Create your views here.
 class messageListCreateView(generics.ListCreateAPIView):
@@ -19,4 +21,19 @@ class UserListCreateView(generics.ListCreateAPIView):
     serializer_class = UserSerializer
 
 def chatroom(request):
-    return render(request,'chat/chatroom.html')   
+    return render(request,'chat/chatroom.html') 
+
+class UserSerializer(ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'password']
+        extra_kwargs = {'password': {'write_only': True}}
+
+    def create(self, validated_data):
+        user = User.objects.create_user(**validated_data)
+        return user
+
+class RegisterView(generics.CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [AllowAny]
