@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Register</title>
+  <style>
+    body { font-family: Arial; margin: 40px; }
+    input { margin: 8px 0; padding: 8px; width: 250px; }
+    button { padding: 8px 15px; }
+  </style>
+</head>
+<body>
+  <h2>Register</h2>
+  <input id="username" placeholder="Username" /><br />
+  <input id="password" type="password" placeholder="Password" /><br />
+  <button onclick="register()">Sign Up</button>
+
+  <p>Already have an account? <a href="/login/">Login here</a></p>
+
+  <script>
+    async function register() {
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+
+      const res = await fetch('/api/register/', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ username, password })
+      });
+
+      if (res.ok) {
+        alert('Registration successful!');
+        window.location.href = '/login/';
+      } else {
+        alert('Failed to register');
+      }
+    }
+  </script>
+</body>
+</html>
