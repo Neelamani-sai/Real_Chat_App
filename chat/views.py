@@ -37,3 +37,8 @@ class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [AllowAny]
+
+def login_view(request):
+    return render(request,'chat/login.html')
+def register_view(request):
+    return render(request,'chat/register.html')
