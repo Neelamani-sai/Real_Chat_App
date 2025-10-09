@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from .models import Message
-from .serializers import messageserializer
+from .serializers import messageserializer,Roomserializer
 from rest_framework import generics,permissions
 from django.contrib.auth.models import User
 from .serializers import UserSerializer
