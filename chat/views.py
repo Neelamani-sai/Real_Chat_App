@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import Message
+from .models import Message,profile
 from .serializers import messageserializer,Roomserializer
 from rest_framework import generics,permissions
 from django.contrib.auth.models import User
@@ -37,6 +37,10 @@ class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [AllowAny]
+
+    def perform_create(self,serializer):
+        user = serializer.save()
+profile.objects.create(user=user)
 
 def login_view(request):
     return render(request,'chat/login.html')
