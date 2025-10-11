@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from .models import Message,profile
-from .serializers import messageserializer,Roomserializer
+from .serializers import messageserializer,Roomserializer,UserProfileSerializer
 from rest_framework import generics,permissions
 from django.contrib.auth.models import User
 from .serializers import UserSerializer
@@ -46,3 +46,8 @@ def login_view(request):
     return render(request,'chat/login.html')
 def register_view(request):
     return render(request,'chat/register.html')
+
+class UserListCreateView(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserProfileSerializer
+    permission_classes = [IsAuthenticated]

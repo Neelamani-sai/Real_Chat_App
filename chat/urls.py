@@ -12,4 +12,5 @@ urlpatterns = [
     path('',chatroom,name='chatroom'),
     path('register/', RegisterView.as_view(), name='register'),
     path('login/')
+    path('api/users/',UserListCreateView.as_view(),name='user-list')
 ]

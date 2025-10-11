@@ -14,3 +14,8 @@ class Roomserializer(serializers.Modelserializer):
     class meta:
         model = Room
         fields = '__all__'
+class UserProfileSerializer(serializers.ModelSerializer):
+    serializers.ReadOnlyField(source='profile.is_online')
+    class meta:
+        model = User
+        fields = ['id','username','is_online']
