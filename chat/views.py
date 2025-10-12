@@ -1,9 +1,9 @@
 from django.shortcuts import render
-from .models import Message,profile
+from .models import Message,profile,DirectMessage
 from .serializers import messageserializer,Roomserializer,UserProfileSerializer
 from rest_framework import generics,permissions
 from django.contrib.auth.models import User
-from .serializers import UserSerializer
+from .serializers import UserSerializer,DirectMessageSerializer
 from rest_framework.serializers import ModelSerializer
 from rest_framework.permissions import AllowAny ,IsAuthenticated
 
@@ -51,3 +51,14 @@ class UserListCreateView(generics.ListAPIView):
     queryset = User.objects.all()
     serializer_class = UserProfileSerializer
     permission_classes = [IsAuthenticated]
+
+class DirectMessageListCreateView(generics.ListCreateAPIView):
+    serializer_class = DirectMessageSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        return DirectMessage.objects.filter(sender=user) | DirectMessage.objects.filter(receiver=user)
+
+    def perform_create(self, serializer):
+        serializer.save(sender=self.request.user)

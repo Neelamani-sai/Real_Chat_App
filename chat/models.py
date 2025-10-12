@@ -27,3 +27,12 @@ class profile(models.Model):
     def is_online(self):
         # If active within the last 2 minutes, mark as online
         return (timezone.now() - self.last_seen).total_seconds() < 120
+class DirectMessage(models.Model):
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_messages')
+    receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_messages')
+    message = models.TextField()
+    timestamp = models.DateTimeField(default=timezone.now)
+
+    def _str_(self):
+        return f"{self.sender} → {self.receiver}: {self.message[:20]}"
+    

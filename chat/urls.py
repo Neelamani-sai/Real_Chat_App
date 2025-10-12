@@ -3,6 +3,8 @@ from .views import messageListCreateView,chatroom
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from .views import UserListCreateView
 from .auth_views import RegisterView
+from .views import DirectMessageListCreateView
+
 
 
 urlpatterns = [
@@ -13,4 +15,5 @@ urlpatterns = [
     path('register/', RegisterView.as_view(), name='register'),
     path('login/')
     path('api/users/',UserListCreateView.as_view(),name='user-list')
+    path('api/direct-messages/', DirectMessageListCreateView.as_view(), name='direct-messages'),
 ]
