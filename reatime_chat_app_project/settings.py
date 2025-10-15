@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'rest_framework_simplejwt',
+    'channels'
     'chat',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -144,4 +145,10 @@ timedelta(minutes=60),
     'REFRESH_TOKEN_LIFETIME':
 timedelta(days=1),
     'AUTH_HEADER_TYPES':('Bearer',),
+}
+
+CHANNEL_LAYERS = {
+    "default":{
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
 }
