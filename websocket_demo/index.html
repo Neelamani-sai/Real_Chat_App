@@ -1,16 +1,32 @@
-import asyncio
-import websockets
+<!DOCTYPE html>
+<html>
+<head>
+  <title>WebSocket Demo</title>
+</head>
+<body>
+  <h2>🧩 WebSocket Hello Demo</h2>
+  <input id="msg" placeholder="Type message" />
+  <button onclick="sendMessage()">Send</button>
+  <ul id="messages"></ul>
 
-# This async function will handle messages from clients
-async def echo(websocket, path):
-    async for message in websocket:
-        print(f"Received: {message}")
-        reply = f"Server says: You said '{message}'"
-        await websocket.send(reply)
+  <script>
+    // Connect to the WebSocket server
+    const socket = new WebSocket("ws://localhost:8765");
 
-# Start WebSocket server on port 8765
-start_server = websockets.serve(echo, "localhost", 8765)
+    socket.onopen = () => {
+      document.getElementById("messages").innerHTML += "<li>✅ Connected to Server</li>";
+    };
 
-print("🚀 WebSocket Server started at ws://localhost:8765")
-asyncio.get_event_loop().run_until_complete(start_server)
-asyncio.get_event_loop().run_forever()
+    socket.onmessage = (event) => {
+      document.getElementById("messages").innerHTML += `<li>${event.data}</li>`;
+    };
+
+    function sendMessage() {
+      const input = document.getElementById("msg");
+      const message = input.value;
+      socket.send(message);
+      input.value = "";
+    }
+  </script>
+</body>
+</html>
