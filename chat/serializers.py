@@ -2,7 +2,7 @@ from rest_framework import serializers
 from .models import Message,Room
 from django.contrib.auth.models import User
 from .models import DirectMessage
-
+from .models import profile
 
 class messageserializer(serializers.ModelSerializer):
     class meta:
@@ -29,3 +29,9 @@ class DirectMessageSerializer(serializers.ModelSerializer):
         model = DirectMessage
         fields = ['id', 'sender', 'sender_username', 'receiver', 'receiver_username', 'message', 'timestamp']
 
+class ProfileSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(source='user.username', read_only=True)
+
+    class Meta:
+        model = Profile
+        fields = ['username', 'bio', 'profile_pic']
