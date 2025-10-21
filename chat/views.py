@@ -62,3 +62,11 @@ class DirectMessageListCreateView(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(sender=self.request.user)
+
+class ProfileDetailUpdateView(generics.RetrieveUpdateAPIView):
+    queryset = profile.objects.all()
+    serializer_class = profileSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user.profile
