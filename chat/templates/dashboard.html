@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Chat Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col">
+  <nav class="bg-blue-600 text-white p-4 flex justify-between">
+    <h1 class="text-lg font-semibold">💬 Real Chat App</h1>
+    <button onclick="logout()" class="bg-white text-blue-600 px-3 py-1 rounded">Logout</button>
+  </nav>
+
+  <div class="flex flex-col items-center mt-6">
+    <h2 class="text-2xl font-semibold mb-4">Welcome, <span id="username"></span> 👋</h2>
+
+    <div class="w-full max-w-lg bg-white shadow rounded-lg p-4">
+      <h3 class="text-lg mb-3 font-semibold">Chat Messages</h3>
+      <div id="messages" class="h-64 overflow-y-scroll border rounded p-2 bg-gray-50 mb-3"></div>
+
+      <div class="flex">
+        <input type="text" id="messageInput" placeholder="Type your message..." 
+          class="flex-1 border rounded p-2 focus:ring focus:ring-blue-400">
+        <button onclick="sendMessage()" class="ml-2 bg-blue-600 text-white px-4 py-2 rounded">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const username = localStorage.getItem("username");
+    document.getElementById("username").textContent = username || "User";
+
+    async function fetchMessages() {
+      const res = await fetch('/api/chat/messages/');
+      const data = await res.json();
+      const box = document.getElementById('messages');
+      box.innerHTML = '';
+      data.forEach(m => {
+        const div = document.createElement('div');
+        div.className = m.sender_name === username ? 'text-right' : 'text-left';
+        div.innerHTML = `
+          <div class="inline-block p-2 mb-1 rounded ${m.sender_name === username ? 'bg-blue-100' : 'bg-gray-200'}">
+            <b>${m.sender_name}</b>: ${m.text}
+          </div>
+        `;
+        box.appendChild(div);
+      });
+      box.scrollTop = box.scrollHeight;
+    }
+
+    async function sendMessage() {
+      const msg = document.getElementById("messageInput").value.trim();
+      if (!msg) return;
+      await fetch('/api/chat/messages/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({ text: msg })
+      });
+      document.getElementById("messageInput").value = '';
+      fetchMessages();
+    }
+
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+
+    async function logout() {
+      await fetch('/api/user/logout/', { method: 'POST' });
+      localStorage.removeItem("username");
+      window.location.href = '/user/login_page/';
+    }
+
+    setInterval(fetchMessages, 3000);
+    fetchMessages();
+  </script>
+</body>
+</html>
