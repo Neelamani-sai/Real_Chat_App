@@ -13,6 +13,9 @@ class messageListCreateView(generics.ListCreateAPIView):
     serializers_class = messageserializer
     permission_classes = [permissions.IsAuthenticated]
 
+    def get_queryset(self):
+        return Message.objects.all().order_by('-timestamp')[:50]
+
     def perform_create(self,serializer):
         serializer.save(user=self.request.user)
 
